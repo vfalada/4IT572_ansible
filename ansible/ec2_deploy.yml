@@ -62,10 +62,10 @@
         repo: 'https://github.com/vfalada/4IT572_docker.git'
         dest: ./app
     - name: Build docker with eshop
-      shell: cd app && docker build -t myeshop:latest .
+      shell: cd app && docker image build -t myeshop:latest .
       become: yes
     - name: Run Docker with eshop
-      shell: docker run -p 80:3000 myeshop
+      shell: docker container run -p 80:3000 myeshop
       async: 45
       poll: 0
       become: yes
