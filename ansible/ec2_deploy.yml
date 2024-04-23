@@ -5,73 +5,15 @@
   tasks:
     - name: Launch EC2 instance
       ec2_instance:
-        instance_type: t3.medium
+        instance_type: t2.micro
         image_id: ami-051f8a213df8bc089
         region: us-east-1
         key_name: devops
         vpc_subnet_id: subnet-07842ae0954cdf926
-        tags:
-          Name: Eshop
         network:
             assign_public_ip: yes
         wait: yes
         count: 1
-        security_group: eshop
         aws_access_key: "{{ access_key }}"
         aws_secret_key: "{{ secret_key }}"
         security_token: "{{ session_token }}"
-      register: ec2_instance_result
-
-    - name: Add instance host to group
-      add_host:
-        hostname: "{{ item.public_ip_address }}"
-        groupname: launched
-      loop: "{{ ec2_instance_result.instances }}"
-
-    - name: Wait for SSH connection
-      delegate_to: "{{ item.public_dns_name }}"
-      wait_for_connection:
-        delay: 30
-        timeout: 300
-      loop: "{{ ec2_instance_result.instances }}"
-
-- name: Configure EC2
-  hosts: launched
-  become: yes
-  connection: ssh
-
-  tasks:
-    - name: Install Git and Docker
-      yum:
-        name:
-          - docker
-          - git
-        state: latest
-        update_cache: yes
-    - service:
-        name: docker
-        state: started
-        enabled: yes
-    - name: Set rights to docker
-      shell: usermod -a -G docker ec2-user
-    - name: Get project files from git
-      git:
-        repo: 'https://github.com/vfalada/4IT572_docker.git'
-        dest: ./app
-    - name: Build Docker image
-      docker_image:
-        build:
-          path: ./app
-        name: eshop
-        tag: latest
-        source: build
-    - name: Run Docker container
-      docker_container:
-        name: eshop
-        image: eshop
-        state: started
-        ports:
-          - "80:3000"
-    - wait_for:
-        port:
-          80
