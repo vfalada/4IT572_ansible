@@ -35,6 +35,7 @@
 
 - name: Configure EC2
   hosts: launched
+  become: yes
   connection: ssh
 
   tasks:
