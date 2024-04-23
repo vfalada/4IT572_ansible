@@ -61,14 +61,19 @@
       git:
         repo: 'https://github.com/vfalada/4IT572_docker.git'
         dest: ./app
-    - name: Build docker with eshop
-      shell: cd app && docker build -t myeshop:latest .
-      become: yes
-    - name: Run Docker with eshop
-      shell: docker run -p 80:3000 myeshop
-      async: 45
-      poll: 0
-      become: yes
+    - name: Build Docker image
+      docker_image:
+        build:
+          path: /app  # Path where Dockerfile is located
+        name: eshop
+        tag: latest
+    - name: Run Docker container
+      docker_container:
+        name: eshop
+        image: eshop
+        state: started
+        ports:
+          - "80:3000"
     - wait_for:
         port:
           80
