@@ -64,7 +64,7 @@
     - name: Build Docker image
       docker_image:
         build:
-          path: /app  # Path where Dockerfile is located
+          path: ./app
         name: eshop
         tag: latest
         source: build
