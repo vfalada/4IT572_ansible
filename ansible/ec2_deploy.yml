@@ -67,6 +67,7 @@
           path: /app  # Path where Dockerfile is located
         name: eshop
         tag: latest
+        source: build
     - name: Run Docker container
       docker_container:
         name: eshop
