@@ -67,7 +67,7 @@
         name: eshop
         tag: latest
         source: build
-    - nme: Run Eshop Docker
+    - name: Run Eshop Docker
       docker_container:
         name: eshop
         image: eshop
